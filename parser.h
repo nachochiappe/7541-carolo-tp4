@@ -21,7 +21,7 @@
  * Pre: Ninguna.
  * Post: El parser fue creado.
  */
-void PA_Crear();
+void PA_Crear(char *arch_a_parsear, char *arch_conf);
 
 /*
  * Descripción: Destruye la estructura del TDA
@@ -36,6 +36,6 @@ void PA_Destruir();
  * Pre: El parser fue creado.
  * Post: Ninguna.
  */
-void PA_Palabra();
+void PA_SigPalabra();
 
 #endif /* PARSER_H_ */
