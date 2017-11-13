@@ -18,14 +18,21 @@
  */
 
 typedef struct {
+	char *palabra;
+	int pagina;
+	int linea;
+	int posicion;
+} TPalabra;
 
+typedef struct {
+	TAB ABGlosario;
 } TDAGlosario;
 
 /*
  * Descripción: Crea la estructura parseando el documento pasado por parámetro teniendo en
  * cuenta la configuración para parsearlo y deja lista la estructura para su explotación.
  */
-int iCrearGlosario(TDAGlosario *g, char *documento, char *arch_config);
+int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config);
 
 /*
  * Descripción: Elimina la información de la estructura.
