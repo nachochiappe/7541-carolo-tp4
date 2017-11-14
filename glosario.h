@@ -18,13 +18,6 @@
  */
 
 typedef struct {
-	char *palabra;
-	int pagina;
-	int linea;
-	int posicion;
-} TPalabra;
-
-typedef struct {
 	TAB ABGlosario;
 } TDAGlosario;
 
