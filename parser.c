@@ -14,6 +14,7 @@
 
 TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	char *token;
+	int cant_separadores = 0;
 
 	TParser *parser = (TParser*) malloc(sizeof(TParser));
 	if (!parser) return (NULL);
@@ -25,7 +26,7 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	ls_Crear(&parser->palabras, MAX_LONG_PALABRA);
 
 	FILE *arch_config = fopen(ruta_config, "r");
-	char linea[20];
+	char linea[MAX_LONG_PALABRA];
 	while (fgets(linea, sizeof(linea), arch_config)) {
 		if (linea[strlen(linea) - 2] == '\r')
 			linea[strlen(linea) - 2] = '\0';
@@ -47,11 +48,13 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 				token = strtok(NULL, "\"");
 				strcpy(&parser->separadores_palabras[i], token);
 				i++;
+				cant_separadores = i;
 			}
 		}
 	}
 	fclose(arch_config);
-	//FILE *documento = fopen(ruta_documento, "r");
+
+	FILE *documento = fopen(ruta_documento, "r");
 	return (parser);
 }
 
