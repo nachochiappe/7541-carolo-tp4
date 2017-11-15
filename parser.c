@@ -27,11 +27,14 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	FILE *arch_config = fopen(ruta_config, "r");
 	char linea[20];
 	while (fgets(linea, sizeof(linea), arch_config)) {
+		if (linea[strlen(linea) - 2] == '\r')
+			linea[strlen(linea) - 2] = '\0';
+		else
+			linea[strlen(linea) - 1] = '\0';
 		if (strcmp(linea, "[SALTO_PAGINA]") == 0) {
 			while (fgets(linea, sizeof(linea), arch_config)) {
 				token = strtok(linea, "=");
 				if (strcmp(token, "caracter") != 0) break;
-				token = strtok(NULL, "\"");
 				token = strtok(NULL, "\"");
 				strcpy(&parser->salto_pagina, token);
 			}
@@ -41,7 +44,6 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 			while (fgets(linea, sizeof(linea), arch_config)) {
 				token = strtok(linea, "=");
 				if (strcmp(token, "caracter") != 0) break;
-				token = strtok(NULL, "\"");
 				token = strtok(NULL, "\"");
 				strcpy(&parser->separadores_palabras[i], token);
 				i++;
