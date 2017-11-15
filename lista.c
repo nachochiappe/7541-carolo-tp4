@@ -6,7 +6,6 @@
  */
 
 #include "lista.h"
-#include "main.h"
 #include <malloc.h>
 #include <memory.h>
 

@@ -8,6 +8,8 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
+#include "structs.h"
+
 /*
  * DESCRIPCIÓN TDA:
  * ----------------
@@ -21,14 +23,14 @@
  * Pre: Ninguna.
  * Post: El parser fue creado.
  */
-void PA_Crear(char *arch_a_parsear, char *arch_conf);
+TParser* PA_Crear(char *ruta_documento, char *ruta_config);
 
 /*
  * Descripción: Destruye la estructura del TDA
  * Pre: El parser fue creado.
  * Post: El parser fue destruido.
  */
-void PA_Destruir();
+void PA_Destruir(TParser *parser);
 
 /*
  * Descripción: Devuelve la palabra del archivo de entrada, con la pagina, línea y posición
@@ -36,6 +38,6 @@ void PA_Destruir();
  * Pre: El parser fue creado.
  * Post: Ninguna.
  */
-void PA_SigPalabra();
+void PA_SigPalabra(TParser parser, TPalabra *palabra);
 
 #endif /* PARSER_H_ */

@@ -8,6 +8,9 @@
 #ifndef GLOSARIO_H_
 #define GLOSARIO_H_
 
+#include "ab.h"
+#include "lista.h"
+
 /*
  * DESCRIPCIÓN TDA:
  * ----------------
