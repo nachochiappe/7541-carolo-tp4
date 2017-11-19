@@ -62,7 +62,7 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 			palabra = (char*) malloc(MAX_LONG_PALABRA);
 			strcpy(palabra, token);
 			ls_Insertar(&parser->palabras, LS_SIGUIENTE, &palabra);
-			strtok(NULL, parser->separadores_palabras);
+			token = strtok(NULL, parser->separadores_palabras);
 		}
 	}
 	return (parser);
