@@ -8,7 +8,7 @@
 #ifndef STRUCTS_H_
 #define STRUCTS_H_
 
-#define MAX_CANT_SEPARADORES 5
+#define MAX_CANT_SEPARADORES 10
 
 #include "lista.h"
 
@@ -26,7 +26,6 @@ typedef struct {
 
 typedef struct {
 	TLista palabras;
-	char salto_pagina;
 	char separadores_palabras[MAX_CANT_SEPARADORES];
 } TParser;
 
