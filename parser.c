@@ -57,12 +57,12 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 
 	FILE *documento = fopen(ruta_documento, "r");
 	while (fgets(linea, sizeof(linea), documento)) {
-		token = strtok(linea, separadores_palabras);
+		token = strtok(linea, parser->separadores_palabras);
 		while (token) {
 			palabra = (char*) malloc(MAX_LONG_PALABRA);
 			strcpy(palabra, token);
 			ls_Insertar(&parser->palabras, LS_SIGUIENTE, &palabra);
-			strtok(NULL, separadores_palabras);
+			strtok(NULL, parser->separadores_palabras);
 		}
 	}
 	return (parser);
