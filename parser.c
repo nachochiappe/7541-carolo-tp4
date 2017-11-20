@@ -9,6 +9,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "parser.h"
+#include "structs.h"
 
 #define MAX_LONG_PALABRA 20
 #define MAX_LINEA 256
@@ -16,7 +17,8 @@
 TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	char *token;
 	char linea[MAX_LINEA];
-	char *palabra;
+	TPalabra *palabra;
+	int nro_pagina = 1, nro_linea = 1, posicion = 1;
 
 	TParser *parser = (TParser*) malloc(sizeof(TParser));
 	if (!parser) return (NULL);
@@ -25,7 +27,7 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	if (!palabras) return (NULL);
 	parser->palabras = *palabras;
 
-	ls_Crear(&parser->palabras, MAX_LONG_PALABRA);
+	ls_Crear(&parser->palabras, sizeof(TPalabra));
 
 	FILE *arch_config = fopen(ruta_config, "r");
 	while (fgets(linea, sizeof(linea), arch_config)) {
@@ -59,12 +61,26 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	while (fgets(linea, sizeof(linea), documento)) {
 		token = strtok(linea, parser->separadores_palabras);
 		while (token) {
-			palabra = (char*) malloc(MAX_LONG_PALABRA);
-			strcpy(palabra, token);
+			palabra = (TPalabra*) malloc(sizeof(TPalabra));
+			strcpy(palabra->palabra, token);
+			palabra->detalles_palabra.pagina = nro_pagina;
+			palabra->detalles_palabra.linea = nro_linea;
+			palabra->detalles_palabra.posicion = posicion;
+			posicion = posicion + strlen(palabra->palabra) + 1;
 			ls_Insertar(&parser->palabras, LS_SIGUIENTE, &palabra);
 			token = strtok(NULL, parser->separadores_palabras);
 		}
+		if (linea[strlen(linea)] == parser->separadores_palabras[0]) {
+			nro_pagina++;
+			nro_linea = 1;
+			posicion = 1;
+		}
+		else {
+			nro_linea++;
+			posicion = 1;
+		}
 	}
+	fclose(documento);
 	return (parser);
 }
 

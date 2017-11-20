@@ -9,20 +9,26 @@
 #define STRUCTS_H_
 
 #define MAX_CANT_SEPARADORES 10
+#define MAX_LONG_PALABRA 20
 
 #include "lista.h"
-
-typedef struct {
-	char palabra[20];
-	int cant_apariciones;
-	TLista detalles_palabra;
-} TPalabra;
 
 typedef struct {
 	int pagina;
 	int linea;
 	int posicion;
 } TDetallePalabra;
+
+typedef struct {
+	char palabra[MAX_LONG_PALABRA];
+	TDetallePalabra detalles_palabra;
+} TPalabra;
+
+typedef struct {
+	char palabra[MAX_LONG_PALABRA];
+	int cant_apariciones;
+	TLista detalles_palabra;
+} TPalabraGlosario;
 
 typedef struct {
 	TLista palabras;
