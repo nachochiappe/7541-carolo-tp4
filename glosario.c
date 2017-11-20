@@ -15,6 +15,7 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 	TPalabra palabra;
 	TPalabraGlosario *palabra_nueva, *palabra_existente;
 	TLista *detalles_palabra;
+	int encontre_palabra = 0;
 
 	TParser *parser = PA_Crear(documento, arch_config);
 
@@ -31,10 +32,28 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 			AB_Insertar(&g->ABGlosario, RAIZ, palabra_nueva);
 		}
 		else {
-			AB_ElemCte(g->ABGlosario, &palabra_existente);
-			if (strcmp(palabra_existente->palabra, palabra_nueva->palabra) == 0) {
-				palabra_existente->cant_apariciones++;
-				ls_Insertar(&palabra_existente->detalles_palabra, LS_SIGUIENTE, &palabra.detalles_palabra);
+			while (encontre_palabra == 0) {
+				AB_ElemCte(g->ABGlosario, &palabra_existente);
+				if (strcmp(palabra_existente->palabra, palabra_nueva->palabra) == 0) {
+					palabra_existente->cant_apariciones++;
+					ls_Insertar(&palabra_existente->detalles_palabra, LS_SIGUIENTE, &palabra.detalles_palabra);
+				}
+				else if (strcmp(palabra_existente->palabra, palabra_nueva->palabra) < 0) {
+					// me muevo para la derecha
+					if (AB_MoverCte(&g->ABGlosario, DER) == FALSE) {
+						//inserto palabra nueva
+						AB_Insertar(&g->ABGlosario, DER, &palabra_nueva);
+						encontre_palabra = 1;
+					}
+				}
+				else {
+					// me muevo para la izquierda
+					if (AB_MoverCte(&g->ABGlosario, IZQ) == FALSE) {
+						//inserto palabra nueva
+						AB_Insertar(&g->ABGlosario, IZQ, &palabra_nueva);
+						encontre_palabra = 1;
+					}
+				}
 			}
 		}
 	} while (ls_MoverCorriente(&parser->palabras, LS_SIGUIENTE));
