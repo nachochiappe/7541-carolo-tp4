@@ -16,7 +16,7 @@ int main (int argc, char *argv[]) {
 
 	char inst[4];
 	char palabra[20];
-	TLista *lResultado;
+	TLista lResultado;
 
 	TDAGlosario *g = (TDAGlosario*) malloc(sizeof(TDAGlosario));
 	if (!g) return (-1);
