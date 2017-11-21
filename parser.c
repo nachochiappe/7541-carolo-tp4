@@ -5,9 +5,11 @@
  *      Author: N67793
  */
 
-#include "stdlib.h"
-#include "stdio.h"
-#include "string.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "lista.h"
 #include "parser.h"
 #include "structs.h"
 
@@ -81,6 +83,7 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 		}
 	}
 	fclose(documento);
+	ls_MoverCorriente(&parser->palabras, LS_PRIMERO);
 	return (parser);
 }
 
@@ -91,6 +94,13 @@ void PA_Destruir(TParser *parser) {
 	return;
 }
 
-void PA_SigPalabra(TParser parser, TPalabra *palabra) {
-
+void PA_SigPalabra(TParser *parser, TPalabra **palabra, int movim) {
+	if (movim == 1) {
+		ls_ElemCorriente(parser->palabras, palabra);
+	}
+	else {
+		if (ls_MoverCorriente(&parser->palabras, LS_SIGUIENTE) == 1)
+			ls_ElemCorriente(parser->palabras, palabra);
+		else palabra = NULL;
+	}
 }
