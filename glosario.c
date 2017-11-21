@@ -27,7 +27,7 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 	palabra_existente = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
 	if (!palabra_existente) return (1);
 
-	while (palabra) {
+	do {
 		AB_MoverCte(&g->ABGlosario, RAIZ);
 		encontre_palabra = 0;
 		palabra_nueva = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
@@ -45,6 +45,7 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 				if (strcmp(palabra_existente->palabra, palabra_nueva->palabra) == 0) {
 					palabra_existente->cant_apariciones++;
 					ls_Insertar(&palabra_existente->detalles_palabra, LS_SIGUIENTE, &palabra->detalles_palabra);
+					encontre_palabra = 1;
 				}
 				else if (strcmp(palabra_existente->palabra, palabra_nueva->palabra) < 0) {
 					// me muevo para la derecha
@@ -64,12 +65,7 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 				}
 			}
 		}
-		PA_SigPalabra(parser, palabra, 0);
-		if (ls_MoverCorriente(&parser->palabras, LS_SIGUIENTE) == TRUE)
-			ls_ElemCorriente(parser->palabras, palabra);
-		else palabra = NULL;
-
-	};
+	} while (PA_SigPalabra(parser, palabra, 0) == 0);
 	free(palabra);
 	free(palabra_existente);
 	free(palabra_nueva);
@@ -85,11 +81,49 @@ int DestruirGlosario(TDAGlosario *g) {
 }
 
 int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) {
+	TPalabraGlosario *palabra_glosario = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
+	if (!palabra_glosario) return (1);
+
+	TDetallePalabra *detalle_palabra = (TDetallePalabra*) malloc(sizeof(TDetallePalabra));
+	if (!detalle_palabra) return (1);
+
+	int encontre_palabra = 0;
+
+	AB_MoverCte(&g->ABGlosario, RAIZ);
+	while (encontre_palabra == 0) {
+		AB_ElemCte(g->ABGlosario, palabra_glosario);
+		if (strcmp(palabra_glosario->palabra, palabra) == 0) {
+			printf("%s\n", palabra);
+			do {
+				ls_ElemCorriente(palabra_glosario->detalles_palabra, detalle_palabra);
+				printf("pagina %d linea %d posicion %d\n", detalle_palabra->pagina, detalle_palabra->linea, detalle_palabra->posicion);
+			} while (ls_MoverCorriente(&palabra_glosario->detalles_palabra, LS_SIGUIENTE) == TRUE);
+			encontre_palabra = 1;
+		}
+		else if (strcmp(palabra_glosario->palabra, palabra) < 0) {
+			if (AB_MoverCte(&g->ABGlosario, DER) == FALSE) break;
+		}
+		else {
+			if (AB_MoverCte(&g->ABGlosario, IZQ) == FALSE) break;
+		}
+	}
+	if (encontre_palabra == 0) printf("La palabra \"%s\" no existe en el texto.\n", palabra);
+
+	free(palabra_glosario);
+	free(detalle_palabra);
 
 	return (0);
 }
 
 int Ranking_palabras_Glosario(TDAGlosario *g, TLista *lResultado) {
+	TPalabraGlosario *palabra_glosario = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
+	if (!palabra_glosario) return (1);
+
+	AB_MoverCte(&g->ABGlosario, RAIZ);
+
+
+
+	free(palabra_glosario);
 
 	return (0);
 }

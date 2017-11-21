@@ -86,19 +86,21 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 
 void PA_Destruir(TParser *parser) {
 	ls_Vaciar(&parser->palabras);
-	free(&parser->palabras);
 	free(parser);
 	return;
 }
 
-void PA_SigPalabra(TParser *parser, TPalabra *palabra, int movim) {
+int PA_SigPalabra(TParser *parser, TPalabra *palabra, int movim) {
 	if (movim == 1) {
 		ls_MoverCorriente(&parser->palabras, LS_PRIMERO);
 		ls_ElemCorriente(parser->palabras, palabra);
+		return (0);
 	}
 	else {
-		if (ls_MoverCorriente(&parser->palabras, LS_SIGUIENTE) == TRUE)
+		if (ls_MoverCorriente(&parser->palabras, LS_SIGUIENTE) == TRUE) {
 			ls_ElemCorriente(parser->palabras, palabra);
-		else palabra = NULL;
+			return (0);
+		}
 	}
+	return (1);
 }

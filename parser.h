@@ -38,6 +38,6 @@ void PA_Destruir(TParser *parser);
  * Pre: El parser fue creado.
  * Post: Ninguna.
  */
-void PA_SigPalabra(TParser *parser, TPalabra *palabra, int movim);
+int PA_SigPalabra(TParser *parser, TPalabra *palabra, int movim);
 
 #endif /* PARSER_H_ */
