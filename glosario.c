@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "glosario.h"
+#include "lista.h"
 #include "parser.h"
 #include "structs.h"
 
@@ -15,25 +16,32 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 	TPalabra *palabra = (TPalabra*) malloc(sizeof(TPalabra));
 	if (!palabra) return (1);
 	TPalabraGlosario *palabra_nueva, *palabra_existente;
-	int encontre_palabra = 0;
+	int encontre_palabra;
 
 	TParser *parser = PA_Crear(documento, arch_config);
 
 	AB_Crear(&g->ABGlosario, sizeof(TPalabraGlosario));
 
-	PA_SigPalabra(parser, &palabra, 1);
+	PA_SigPalabra(parser, palabra, 1);
+
+	palabra_existente = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
+	if (!palabra_existente) return (1);
+
 	while (palabra) {
+		AB_MoverCte(&g->ABGlosario, RAIZ);
+		encontre_palabra = 0;
 		palabra_nueva = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
 		if (!palabra_nueva) return (1);
 		strcpy(palabra_nueva->palabra, palabra->palabra);
 		palabra_nueva->cant_apariciones = 1;
+		ls_Crear(&palabra_nueva->detalles_palabra, sizeof(TDetallePalabra));
 		ls_Insertar(&palabra_nueva->detalles_palabra, LS_SIGUIENTE, &palabra->detalles_palabra);
 		if (AB_Vacio(g->ABGlosario)) {
 			AB_Insertar(&g->ABGlosario, RAIZ, palabra_nueva);
 		}
 		else {
 			while (encontre_palabra == 0) {
-				AB_ElemCte(g->ABGlosario, &palabra_existente);
+				AB_ElemCte(g->ABGlosario, palabra_existente);
 				if (strcmp(palabra_existente->palabra, palabra_nueva->palabra) == 0) {
 					palabra_existente->cant_apariciones++;
 					ls_Insertar(&palabra_existente->detalles_palabra, LS_SIGUIENTE, &palabra->detalles_palabra);
@@ -42,7 +50,7 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 					// me muevo para la derecha
 					if (AB_MoverCte(&g->ABGlosario, DER) == FALSE) {
 						//inserto palabra nueva
-						AB_Insertar(&g->ABGlosario, DER, &palabra_nueva);
+						AB_Insertar(&g->ABGlosario, DER, palabra_nueva);
 						encontre_palabra = 1;
 					}
 				}
@@ -50,14 +58,21 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 					// me muevo para la izquierda
 					if (AB_MoverCte(&g->ABGlosario, IZQ) == FALSE) {
 						//inserto palabra nueva
-						AB_Insertar(&g->ABGlosario, IZQ, &palabra_nueva);
+						AB_Insertar(&g->ABGlosario, IZQ, palabra_nueva);
 						encontre_palabra = 1;
 					}
 				}
 			}
 		}
-		PA_SigPalabra(parser, &palabra, 0);
+		PA_SigPalabra(parser, palabra, 0);
+		if (ls_MoverCorriente(&parser->palabras, LS_SIGUIENTE) == TRUE)
+			ls_ElemCorriente(parser->palabras, palabra);
+		else palabra = NULL;
+
 	};
+	free(palabra);
+	free(palabra_existente);
+	free(palabra_nueva);
 	PA_Destruir(parser);
 	return (0);
 }

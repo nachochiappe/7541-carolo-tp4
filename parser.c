@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "lista.h"
 #include "parser.h"
@@ -61,11 +62,12 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 		while (token) {
 			palabra = (TPalabra*) malloc(sizeof(TPalabra));
 			strcpy(palabra->palabra, token);
+			palabra->palabra[0] = tolower(palabra->palabra[0]);
 			palabra->detalles_palabra.pagina = nro_pagina;
 			palabra->detalles_palabra.linea = nro_linea;
 			palabra->detalles_palabra.posicion = posicion;
 			posicion = posicion + strlen(palabra->palabra) + 1;
-			ls_Insertar(&parser->palabras, LS_SIGUIENTE, &palabra);
+			ls_Insertar(&parser->palabras, LS_SIGUIENTE, palabra);
 			token = strtok(NULL, parser->separadores_palabras);
 		}
 		if (linea[strlen(linea)] == parser->separadores_palabras[0]) {
@@ -89,7 +91,7 @@ void PA_Destruir(TParser *parser) {
 	return;
 }
 
-void PA_SigPalabra(TParser *parser, TPalabra **palabra, int movim) {
+void PA_SigPalabra(TParser *parser, TPalabra *palabra, int movim) {
 	if (movim == 1) {
 		ls_MoverCorriente(&parser->palabras, LS_PRIMERO);
 		ls_ElemCorriente(parser->palabras, palabra);
