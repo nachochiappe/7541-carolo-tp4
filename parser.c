@@ -25,10 +25,6 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	TParser *parser = (TParser*) malloc(sizeof(TParser));
 	if (!parser) return (NULL);
 
-	TLista *palabras = (TLista*) malloc(sizeof(TLista));
-	if (!palabras) return (NULL);
-	parser->palabras = *palabras;
-
 	ls_Crear(&parser->palabras, sizeof(TPalabra));
 
 	FILE *arch_config = fopen(ruta_config, "r");

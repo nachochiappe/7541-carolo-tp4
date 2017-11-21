@@ -12,22 +12,19 @@
 #include "structs.h"
 
 int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
-	TPalabra *palabra;
+	TPalabra *palabra = (TPalabra*) malloc(sizeof(TPalabra));
+	if (!palabra) return (1);
 	TPalabraGlosario *palabra_nueva, *palabra_existente;
-	TLista *detalles_palabra;
 	int encontre_palabra = 0;
 
 	TParser *parser = PA_Crear(documento, arch_config);
 
 	AB_Crear(&g->ABGlosario, sizeof(TPalabraGlosario));
 
-	//palabra = (TPalabra*) malloc(sizeof(TPalabra));
-
 	PA_SigPalabra(parser, &palabra, 1);
 	while (palabra) {
 		palabra_nueva = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
-		detalles_palabra = (TLista*) malloc(sizeof(TLista));
-		palabra_nueva->detalles_palabra = *detalles_palabra;
+		if (!palabra_nueva) return (1);
 		strcpy(palabra_nueva->palabra, palabra->palabra);
 		palabra_nueva->cant_apariciones = 1;
 		ls_Insertar(&palabra_nueva->detalles_palabra, LS_SIGUIENTE, &palabra->detalles_palabra);
