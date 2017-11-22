@@ -75,7 +75,6 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 
 int DestruirGlosario(TDAGlosario *g) {
 	AB_Vaciar(&g->ABGlosario);
-	free(&g->ABGlosario);
 	free(g);
 	return (0);
 }
@@ -93,11 +92,7 @@ int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) 
 	while (encontre_palabra == 0) {
 		AB_ElemCte(g->ABGlosario, palabra_glosario);
 		if (strcmp(palabra_glosario->palabra, palabra) == 0) {
-			printf("%s\n", palabra);
-			do {
-				ls_ElemCorriente(palabra_glosario->detalles_palabra, detalle_palabra);
-				printf("pagina %d linea %d posicion %d\n", detalle_palabra->pagina, detalle_palabra->linea, detalle_palabra->posicion);
-			} while (ls_MoverCorriente(&palabra_glosario->detalles_palabra, LS_SIGUIENTE) == TRUE);
+			ls_Insertar(lResultado, LS_SIGUIENTE, palabra_glosario);
 			encontre_palabra = 1;
 		}
 		else if (strcmp(palabra_glosario->palabra, palabra) < 0) {
@@ -107,7 +102,7 @@ int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) 
 			if (AB_MoverCte(&g->ABGlosario, IZQ) == FALSE) break;
 		}
 	}
-	if (encontre_palabra == 0) printf("La palabra \"%s\" no existe en el texto.\n", palabra);
+	if (encontre_palabra == 0) return (1);
 
 	free(palabra_glosario);
 	free(detalle_palabra);

@@ -21,7 +21,7 @@ int main (int argc, char *argv[]) {
 	TDAGlosario *g = (TDAGlosario*) malloc(sizeof(TDAGlosario));
 	if (!g) return (-1);
 
-	ls_Crear(&lResultado, sizeof(TPalabra));
+	ls_Crear(&lResultado, sizeof(TPalabraGlosario));
 
 	if (CrearGlosario(g, argv[1], argv[2]) != 0) return (1);
 
@@ -34,7 +34,26 @@ int main (int argc, char *argv[]) {
 				palabra[strlen(palabra) - 2] = '\0';
 			else
 				palabra[strlen(palabra) - 1] = '\0';
-			if (ConsultarpalabraGlosario(g, palabra, &lResultado) != 0) return (1);
+			if (ConsultarpalabraGlosario(g, palabra, &lResultado) != 0)
+				printf("La palabra \"%s\" no existe en el texto.\n", palabra);
+			else {
+				TPalabraGlosario *palabra_glosario = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
+				if (!palabra_glosario) return (1);
+
+				TDetallePalabra *detalle_palabra = (TDetallePalabra*) malloc(sizeof(TDetallePalabra));
+				if (!detalle_palabra) return (1);
+
+				printf("%s\n", palabra);
+
+				ls_ElemCorriente(lResultado, palabra_glosario);
+				do {
+					ls_ElemCorriente(palabra_glosario->detalles_palabra, detalle_palabra);
+					printf("pagina %d linea %d posicion %d\n", detalle_palabra->pagina, detalle_palabra->linea, detalle_palabra->posicion);
+				} while (ls_MoverCorriente(&palabra_glosario->detalles_palabra, LS_SIGUIENTE) == TRUE);
+
+				free(detalle_palabra);
+				free(palabra_glosario);
+			}
 		}
 		else if (strcmp(inst, "rp") == 0) {
 			if (Ranking_palabras_Glosario(g, &lResultado) != 0) return (1);
