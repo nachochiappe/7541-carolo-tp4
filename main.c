@@ -52,6 +52,7 @@ int main (int argc, char *argv[]) {
 					printf("pagina %d linea %d posicion %d\n", detalle_palabra->pagina, detalle_palabra->linea, detalle_palabra->posicion);
 				} while (ls_MoverCorriente(&palabra_glosario->detalles_palabra, LS_SIGUIENTE) == TRUE);
 
+				ls_Vaciar(&lResultado);
 				free(detalle_palabra);
 				free(palabra_glosario);
 			}
@@ -67,6 +68,7 @@ int main (int argc, char *argv[]) {
 				printf("%s %d repeticiones\n", palabra_glosario->palabra, palabra_glosario->cant_apariciones);
 			} while (ls_MoverCorriente(&lResultado, LS_SIGUIENTE) == TRUE);
 
+			ls_Vaciar(&lResultado);
 			free(palabra_glosario);
 		}
 		else
