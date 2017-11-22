@@ -44,6 +44,9 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 				AB_ElemCte(g->ABGlosario, palabra_existente);
 				if (strcmp(palabra_existente->palabra, palabra_nueva->palabra) == 0) {
 					palabra_existente->cant_apariciones++;
+					do {
+						if (ls_MoverCorriente(&palabra_existente->detalles_palabra, LS_SIGUIENTE) == FALSE) break;
+					} while (1);
 					ls_Insertar(&palabra_existente->detalles_palabra, LS_SIGUIENTE, &palabra->detalles_palabra);
 					encontre_palabra = 1;
 				}
