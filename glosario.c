@@ -44,6 +44,7 @@ int CrearGlosario(TDAGlosario *g, char *documento, char *arch_config) {
 				AB_ElemCte(g->ABGlosario, palabra_existente);
 				if (strcmp(palabra_existente->palabra, palabra_nueva->palabra) == 0) {
 					palabra_existente->cant_apariciones++;
+					AB_ModifCte(&g->ABGlosario, palabra_existente);
 					do {
 						if (ls_MoverCorriente(&palabra_existente->detalles_palabra, LS_SIGUIENTE) == FALSE) break;
 					} while (1);
@@ -114,14 +115,8 @@ int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) 
 }
 
 int Ranking_palabras_Glosario(TDAGlosario *g, TLista *lResultado) {
-	TPalabraGlosario *palabra_glosario = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
-	if (!palabra_glosario) return (1);
-
-	AB_MoverCte(&g->ABGlosario, RAIZ);
 
 
-
-	free(palabra_glosario);
 
 	return (0);
 }

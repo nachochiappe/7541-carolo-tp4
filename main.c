@@ -46,6 +46,7 @@ int main (int argc, char *argv[]) {
 				printf("%s\n", palabra);
 
 				ls_ElemCorriente(lResultado, palabra_glosario);
+				printf("%d repeticiones\n", palabra_glosario->cant_apariciones);
 				do {
 					ls_ElemCorriente(palabra_glosario->detalles_palabra, detalle_palabra);
 					printf("pagina %d linea %d posicion %d\n", detalle_palabra->pagina, detalle_palabra->linea, detalle_palabra->posicion);
@@ -57,6 +58,16 @@ int main (int argc, char *argv[]) {
 		}
 		else if (strcmp(inst, "rp") == 0) {
 			if (Ranking_palabras_Glosario(g, &lResultado) != 0) return (1);
+			TPalabraGlosario *palabra_glosario = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
+			if (!palabra_glosario) return (1);
+
+			ls_MoverCorriente(&lResultado, LS_PRIMERO);
+			ls_ElemCorriente(lResultado, palabra_glosario);
+			do {
+				printf("%s %d repeticiones\n", palabra_glosario->palabra, palabra_glosario->cant_apariciones);
+			} while (ls_MoverCorriente(&lResultado, LS_SIGUIENTE) == TRUE);
+
+			free(palabra_glosario);
 		}
 		else
 			printf("%s es una instrucción errónea.\n", inst);
