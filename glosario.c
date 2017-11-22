@@ -114,9 +114,20 @@ int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) 
 	return (0);
 }
 
+int Ranking_palabras_Recursivo(TAB arbol, TLista *lResultado, int movimiento) {
+	TPalabraGlosario palabraGlosario;
+	TPalabraRanking palabraRanking;
+	if (movimiento == RAIZ) {
+		AB_MoverCte(arbol, RAIZ);
+		AB_ElemCte(arbol,palabraGlosario);
+
+	} else if {}
+}
+
 int Ranking_palabras_Glosario(TDAGlosario *g, TLista *lResultado) {
-
-
-
-	return (0);
+	if(!lResultado) {
+		ls_Crear(lResultado, sizeof(TPalabraRanking));
+	}
+	else Ranking_palabras_Recursivo(g->ABGlosario, lResultado, RAIZ);
+	return 0;
 }

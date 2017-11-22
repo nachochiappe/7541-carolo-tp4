@@ -35,4 +35,9 @@ typedef struct {
 	char separadores_palabras[MAX_CANT_SEPARADORES];
 } TParser;
 
+typedef struct {
+	char palabra[MAX_LONG_PALABRA];
+	int cant_apariciones;
+} TPalabraRanking;
+
 #endif /* STRUCTS_H_ */
