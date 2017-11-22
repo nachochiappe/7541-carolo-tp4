@@ -143,8 +143,10 @@ int Ranking_palabras_Recursivo(TAB arbol, TLista *lResultado, int movimiento) {
 			ls_ElemCorriente(lResultado, palabraRankingAux);
 			while((palabraRankingAux->cant_apariciones > palabraRanking->cant_apariciones)
 			&& resultadoMovimiento) {
-
+				resultadoMovimiento = ls_MoverCorriente(lResultado, LS_PRIMERO);
+				ls_ElemCorriente(lResultado, palabraRankingAux);
 			}
+			ls_Insertar(lResultado, LS_ANTERIOR, palabraRanking);
 		}
 		Ranking_palabras_Recursivo(arbol, lResultado, IZQ);
 		Ranking_palabras_Recursivo(arbol, lResultado, DER);
