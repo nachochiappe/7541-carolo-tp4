@@ -21,6 +21,7 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	char *token;
 	char linea[MAX_LINEA];
 	TPalabra *palabra;
+	int proxima_pagina = 0;
 	int nro_pagina = 1, nro_linea = 1, posicion = 1;
 
 	TParser *parser = (TParser*) malloc(sizeof(TParser));
@@ -29,8 +30,8 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 	ls_Crear(&parser->palabras, sizeof(TPalabra));
 
 	FILE *arch_config = fopen(ruta_config, "r");
+	int i = 0;
 	while (fgets(linea, sizeof(linea), arch_config)) {
-		int i = 0;
 		if (linea[strlen(linea) - 2] == '\r')
 			linea[strlen(linea) - 2] = '\0';
 		else
@@ -58,6 +59,12 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 
 	FILE *documento = fopen(ruta_documento, "r");
 	while (fgets(linea, sizeof(linea), documento)) {
+		if (linea[strlen(linea) - 2] == '\r')
+			linea[strlen(linea) - 2] = '\0';
+		else if (linea[strlen(linea) - 1] == '\n')
+			linea[strlen(linea) - 1] = '\0';
+		if (linea[strlen(linea) - 1] == parser->separadores_palabras[0])
+			proxima_pagina = 1;
 		token = strtok(linea, parser->separadores_palabras);
 		while (token) {
 			palabra = (TPalabra*) malloc(sizeof(TPalabra));
@@ -70,10 +77,11 @@ TParser* PA_Crear(char *ruta_documento, char *ruta_config) {
 			ls_Insertar(&parser->palabras, LS_SIGUIENTE, palabra);
 			token = strtok(NULL, parser->separadores_palabras);
 		}
-		if (linea[strlen(linea)] == parser->separadores_palabras[0]) {
+		if (proxima_pagina == 1) {
 			nro_pagina++;
 			nro_linea = 1;
 			posicion = 1;
+			proxima_pagina = 0;
 		}
 		else {
 			nro_linea++;
