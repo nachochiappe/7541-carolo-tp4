@@ -115,13 +115,34 @@ int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) 
 }
 
 int Ranking_palabras_Recursivo(TAB arbol, TLista *lResultado, int movimiento) {
-	TPalabraGlosario palabraGlosario;
-	TPalabraRanking palabraRanking;
-	if (movimiento == RAIZ) {
-		AB_MoverCte(arbol, RAIZ);
-		AB_ElemCte(arbol,palabraGlosario);
+	int errorMovimiento;
+	TPalabraGlosario *palabraGlosario;
+	TPalabraRanking *palabraRanking = (TPalabraRanking*) malloc(siezeof(TPalabraRanking));
+	switch(movimiento) {
+					case RAIZ:
+						errorMovimiento = AB_MoverCte(arbol, RAIZ);
+						break;
+					case IZQ:
+						errorMovimiento = AB_MoverCte(arbol, IZQ);
+						break;
+					case DER:
+						errorMovimiento = AB_MoverCte(arbol, DER);
+						break;
+	}
+	AB_ElemCte(arbol, palabraGlosario);
 
-	} else if {}
+	if(!errorMovimiento) return 1;
+
+	strcpy(palabraRanking->palabra,palabraGlosario->palabra);
+	palabraRanking->cant_apariciones = palabraGlosario->cant_apariciones;
+
+	if(ls_vacia(lResultado)) {
+		ls_Insertar(lResultado, LS_PRIMERO, palabraRanking);
+	}else{
+		ls_MoverCorriente(lResultado, LS_PRIMERO);
+		while()
+	}
+
 }
 
 int Ranking_palabras_Glosario(TDAGlosario *g, TLista *lResultado) {
