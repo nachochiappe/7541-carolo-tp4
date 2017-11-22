@@ -59,17 +59,19 @@ int main (int argc, char *argv[]) {
 		}
 		else if (strcmp(inst, "rp") == 0) {
 			if (Ranking_palabras_Glosario(g, &lResultado) != 0) return (1);
+
 			TPalabraGlosario *palabra_glosario = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
 			if (!palabra_glosario) return (1);
 
 			ls_MoverCorriente(&lResultado, LS_PRIMERO);
-			ls_ElemCorriente(lResultado, palabra_glosario);
 			do {
+				ls_ElemCorriente(lResultado, palabra_glosario);
 				printf("%s %d repeticiones\n", palabra_glosario->palabra, palabra_glosario->cant_apariciones);
 			} while (ls_MoverCorriente(&lResultado, LS_SIGUIENTE) == TRUE);
 
 			ls_Vaciar(&lResultado);
 			free(palabra_glosario);
+
 		}
 		else
 			printf("%s es una instrucción errónea.\n", inst);

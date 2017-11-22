@@ -114,58 +114,51 @@ int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) 
 	return (0);
 }
 
-int Ranking_palabras_Recursivo(TAB arbol, TLista *lResultado, int movimiento) {
-	int resultadoMovimiento;
-	TPalabraGlosario *palabraGlosario;
-	TPalabraRanking *palabraRankingAux, *palabraRanking;
+void InOrden(TAB ABGlosario, int MOV, TLista *lResultado) {
+	TPalabraGlosario *palabra_glosario = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
+	if (!palabra_glosario) return;
 
-	switch(movimiento) {
-					case RAIZ:
-						resultadoMovimiento = AB_MoverCte(arbol, RAIZ);
-						break;
-					case IZQ:
-						resultadoMovimiento = AB_MoverCte(arbol, IZQ);
-						break;
-					case DER:
-						resultadoMovimiento = AB_MoverCte(arbol, DER);
-						break;
-	}
-	AB_ElemCte(arbol, palabraGlosario);
+	TPalabraGlosario *palabra_ranking = (TPalabraGlosario*) malloc(sizeof(TPalabraGlosario));
+	if (!palabra_ranking) return;
 
-	if(resultadoMovimiento) {
-		/* creo la palabra de ranking a partir de la palabra del glosario */
-		*palabraRanking = (TPalabraRanking*) malloc(siezeof(TPalabraRanking));
-		strcpy(palabraRanking->palabra,palabraGlosario->palabra);
-		palabraRanking->cant_apariciones = palabraGlosario->cant_apariciones;
-
-		/* si la lista esta vacia lo agrego al principio */
-		if(ls_vacia(lResultado)) {
-			ls_Insertar(lResultado, LS_PRIMERO, palabraRanking);
-		}else{
-			/* Si la lista no esta vacia, busco para insertar ordenado de mayor a menor*/
-			resultadoMovimiento = ls_MoverCorriente(lResultado, LS_PRIMERO);
-			ls_ElemCorriente(lResultado, palabraRankingAux);
-			while((palabraRankingAux->cant_apariciones > palabraRanking->cant_apariciones)
-			&& resultadoMovimiento) {
-				resultadoMovimiento = ls_MoverCorriente(lResultado, LS_SIGUIENTE);
-				ls_ElemCorriente(lResultado, palabraRankingAux);
-			}
-
-			ls_Insertar(lResultado, LS_ANTERIOR, palabraRanking);
+	if (AB_MoverCte(&ABGlosario, MOV) == TRUE) {
+		/* Proceso árbol izquierdo */
+		InOrden(ABGlosario, IZQ, lResultado);
+		AB_ElemCte(ABGlosario, palabra_glosario);
+		/* Si la lista resultado está vacía, la palabra la ingreso en la primera posición */
+		if (ls_Vacia(*lResultado)) {
+			ls_Insertar(lResultado, LS_PRIMERO, palabra_glosario);
 		}
-
-		/* finalmente, realizo las llamadas recursivas para los subarboles IZQ y DER*/
-		Ranking_palabras_Recursivo(arbol, lResultado, IZQ);
-		Ranking_palabras_Recursivo(arbol, lResultado, DER);
+		else {
+			ls_MoverCorriente(lResultado, LS_PRIMERO);
+			do {
+				ls_ElemCorriente(*lResultado, palabra_ranking);
+				while (palabra_glosario->cant_apariciones >= palabra_ranking->cant_apariciones) {
+					if (ls_MoverCorriente(lResultado, LS_SIGUIENTE) == FALSE) break;
+					ls_ElemCorriente(*lResultado, palabra_ranking);
+				}
+				if (palabra_glosario->cant_apariciones > palabra_ranking->cant_apariciones) {
+					ls_Insertar(lResultado, LS_SIGUIENTE, palabra_glosario);
+					break;
+				}
+				else {
+					ls_Insertar(lResultado, LS_ANTERIOR, palabra_glosario);
+					break;
+				}
+			} while (ls_MoverCorriente(lResultado, LS_SIGUIENTE) == TRUE);
+		}
+		/* Proceso árbol derecho */
+		InOrden(ABGlosario, DER, lResultado);
 	}
 
-	return 0;
+	free(palabra_ranking);
+	free(palabra_glosario);
 }
 
+
 int Ranking_palabras_Glosario(TDAGlosario *g, TLista *lResultado) {
-	if(!lResultado) {
-		ls_Crear(lResultado, sizeof(TPalabraRanking));
-	}
-	else Ranking_palabras_Recursivo(g->ABGlosario, lResultado, RAIZ);
-	return 0;
+
+	InOrden(g->ABGlosario, RAIZ, lResultado);
+
+	return (0);
 }
