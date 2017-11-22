@@ -115,33 +115,41 @@ int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) 
 }
 
 int Ranking_palabras_Recursivo(TAB arbol, TLista *lResultado, int movimiento) {
-	int errorMovimiento;
+	int resultadoMovimiento;
 	TPalabraGlosario *palabraGlosario;
-	TPalabraRanking *palabraRanking = (TPalabraRanking*) malloc(siezeof(TPalabraRanking));
+	TPalabraRanking *palabraRankingAux, *palabraRanking = (TPalabraRanking*) malloc(siezeof(TPalabraRanking));
+
 	switch(movimiento) {
 					case RAIZ:
-						errorMovimiento = AB_MoverCte(arbol, RAIZ);
+						resultadoMovimiento = AB_MoverCte(arbol, RAIZ);
 						break;
 					case IZQ:
-						errorMovimiento = AB_MoverCte(arbol, IZQ);
+						resultadoMovimiento = AB_MoverCte(arbol, IZQ);
 						break;
 					case DER:
-						errorMovimiento = AB_MoverCte(arbol, DER);
+						resultadoMovimiento = AB_MoverCte(arbol, DER);
 						break;
 	}
 	AB_ElemCte(arbol, palabraGlosario);
 
-	if(!errorMovimiento) return 1;
+	if(resultadoMovimiento) {
+		strcpy(palabraRanking->palabra,palabraGlosario->palabra);
+		palabraRanking->cant_apariciones = palabraGlosario->cant_apariciones;
 
-	strcpy(palabraRanking->palabra,palabraGlosario->palabra);
-	palabraRanking->cant_apariciones = palabraGlosario->cant_apariciones;
+		if(ls_vacia(lResultado)) {
+			ls_Insertar(lResultado, LS_PRIMERO, palabraRanking);
+		}else{
+			resultadoMovimiento = ls_MoverCorriente(lResultado, LS_PRIMERO);
+			ls_ElemCorriente(lResultado, palabraRankingAux);
+			while((palabraRankingAux->cant_apariciones > palabraRanking->cant_apariciones)
+			&& resultadoMovimiento) {
 
-	if(ls_vacia(lResultado)) {
-		ls_Insertar(lResultado, LS_PRIMERO, palabraRanking);
-	}else{
-		ls_MoverCorriente(lResultado, LS_PRIMERO);
-		while()
+			}
+		}
+		Ranking_palabras_Recursivo(arbol, lResultado, IZQ);
+		Ranking_palabras_Recursivo(arbol, lResultado, DER);
 	}
+
 
 }
 
