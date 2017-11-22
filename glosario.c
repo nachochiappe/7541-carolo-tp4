@@ -117,7 +117,7 @@ int ConsultarpalabraGlosario(TDAGlosario *g, char *palabra, TLista *lResultado) 
 int Ranking_palabras_Recursivo(TAB arbol, TLista *lResultado, int movimiento) {
 	int resultadoMovimiento;
 	TPalabraGlosario *palabraGlosario;
-	TPalabraRanking *palabraRankingAux, *palabraRanking = (TPalabraRanking*) malloc(siezeof(TPalabraRanking));
+	TPalabraRanking *palabraRankingAux, *palabraRanking;
 
 	switch(movimiento) {
 					case RAIZ:
@@ -133,26 +133,33 @@ int Ranking_palabras_Recursivo(TAB arbol, TLista *lResultado, int movimiento) {
 	AB_ElemCte(arbol, palabraGlosario);
 
 	if(resultadoMovimiento) {
+		/* creo la palabra de ranking a partir de la palabra del glosario */
+		*palabraRanking = (TPalabraRanking*) malloc(siezeof(TPalabraRanking));
 		strcpy(palabraRanking->palabra,palabraGlosario->palabra);
 		palabraRanking->cant_apariciones = palabraGlosario->cant_apariciones;
 
+		/* si la lista esta vacia lo agrego al principio */
 		if(ls_vacia(lResultado)) {
 			ls_Insertar(lResultado, LS_PRIMERO, palabraRanking);
 		}else{
+			/* Si la lista no esta vacia, busco para insertar ordenado de mayor a menor*/
 			resultadoMovimiento = ls_MoverCorriente(lResultado, LS_PRIMERO);
 			ls_ElemCorriente(lResultado, palabraRankingAux);
 			while((palabraRankingAux->cant_apariciones > palabraRanking->cant_apariciones)
 			&& resultadoMovimiento) {
-				resultadoMovimiento = ls_MoverCorriente(lResultado, LS_PRIMERO);
+				resultadoMovimiento = ls_MoverCorriente(lResultado, LS_SIGUIENTE);
 				ls_ElemCorriente(lResultado, palabraRankingAux);
 			}
+
 			ls_Insertar(lResultado, LS_ANTERIOR, palabraRanking);
 		}
+
+		/* finalmente, realizo las llamadas recursivas para los subarboles IZQ y DER*/
 		Ranking_palabras_Recursivo(arbol, lResultado, IZQ);
 		Ranking_palabras_Recursivo(arbol, lResultado, DER);
 	}
 
-
+	return 0;
 }
 
 int Ranking_palabras_Glosario(TDAGlosario *g, TLista *lResultado) {
